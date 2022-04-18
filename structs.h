@@ -3,7 +3,7 @@
 
 #include "config.h"
 
-static const char right_symb[] = " qwertyuiop[]{}asdfghjkl;zxcvbnm,.?!@~`#№$%^&()+-";
+static const char right_symb[] = " qwertyuiop[]{}asdfghjkl;zxcvbnm,.?!@~`#№$%^&()+-0123456789";
 
 #define extinsion_lenth 5
 #define filename_lenth 10
@@ -15,7 +15,7 @@ typedef struct{
     char extension[extinsion_lenth+1];
 }File;
 
-File createFile();
+int createFile(char* file_name, char* extension, File* file);
 
 typedef struct Fold{
     uint8_t files_count_cur;
@@ -32,5 +32,7 @@ typedef struct Fold{
 int createFolder(char* folder_name, Folder* folder);
 
 int addFolder(char* folder_name, Folder* fld);
+
+int addFile(char* file_name, char* extension, Folder* fld);
 
 #endif
