@@ -1,7 +1,7 @@
-CC=gcc-11
+CC=gcc
 CFLAGS=-g -Wall -Wextra -O0
 LDFLAGS=
-SOURCES=main.c config.h structs.h
+SOURCES=main.c config.h structs.h structs.c
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=work1
 

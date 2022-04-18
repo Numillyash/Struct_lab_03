@@ -52,22 +52,21 @@ typedef enum {
 #define primes_1024_bit_filename "primes_1024_bit.blackleague"
 
 /// <summary>
-/// Exit codes for exit()
+/// Error codes
 /// </summary>
-enum EXIT_CODE {
+typedef enum {
 	SUCCESS,
 	FAILURE,
 	NO_ARGUMENTS_FAILURE,
 	WRONG_ARGUMENT_FAILURE,
 	NOT_ENOUGH_ARGUMENTS_FAILURE,
-	FILE_OPEN_FAILURE,
-	FILE_FORMAT_FAILURE,
-	LOG_FAILURE,
 	MEMORY_ALLOCATION_FAILURE,
-	GET_PRIME_FAILURE,
-	GET_NUMBER_FAILURE,
+	FILENAME_LENGTH_FAILURE,
+	FILENAME_SYMBOL_FAILURE,
+	FILENAME_ENDING_FAILURE,
+	FORMAT_FAILURE,
 	DEBUG_EXIT_CODE = 100
-};
+} ERROR_CODE;
 
 // fast funcs
 #define swap(a,b); b = a+b; a = b-a; b = b-a;
