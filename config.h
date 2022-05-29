@@ -22,34 +22,14 @@
 #define CHECK_CONSOLE_OPTION "check"
 #define ENCRYPT_CONSOLE_OPTION "encrypt"
 #define DECRYPT_CONSOLE_OPTION "decrypt"
-#define SIZE_CONSOLE_OPTION "--size"
-#define PUBKEY_CONSOLE_OPTION "--pubkey"
-#define SECRET_CONSOLE_OPTION "--secret"
-#define SIGFILE_CONSOLE_OPTION "--sigfile"
-#define INFILE_CONSOLE_OPTION "--infile"
-#define OUTFILE_CONSOLE_OPTION "--outfile"
 
 // boolean
 #define BOOL int
 #define TRUE 1
 #define FALSE 0
 
-// RSA
-#define KEYSIZE_MODULE 256
-typedef enum {
-	KEY_256 = 256,
-	KEY_512 = 512,
-	KEY_1024 = 1024,
-	KEY_2048 = 2048
-} KEY_BIT_SIZE;
-
 // file
 #define FILE_OPENING_ERROR "Cannot open the %s file.\n"
-
-#define primes_128_bit_filename "primes_128_bit.blackleague"
-#define primes_256_bit_filename "primes_256_bit.blackleague"
-#define primes_512_bit_filename "primes_512_bit.blackleague"
-#define primes_1024_bit_filename "primes_1024_bit.blackleague"
 
 /// <summary>
 /// Error codes

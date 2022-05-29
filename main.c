@@ -4,11 +4,15 @@ int main()
 {
     File new_file;
     Folder new_folder;
-    createFile("huy", "pizda", &new_file);
+    createFile("file1", "hehe", &new_file);
     createFolder("root", &new_folder);
     printf("%s\n", new_file.creation_time);
+    printf("%s\n", new_file.filename);
+    printf("%s\n", new_file.extension);
+
+
     
-    printf("%s\n", new_folder.creation_time);
+    printf("\n%s\n", new_folder.creation_time);
     printf("%s\n", new_folder.filename);
     printf("%d\n", new_folder.folders_count_cur);
     printf("%d\n", new_folder.files_count_cur);
@@ -19,7 +23,7 @@ int main()
 
 
 
-    printf("\n%d\n", addFolder("soso", &new_folder));
+    printf("\n%d\n", addFolder("sos", &new_folder));
     printf("%d\n", new_folder.exists_into);
     printf("%d\n", new_folder.folders_count_cur);
     printf("%d\n", new_folder.files_count_cur);
@@ -29,7 +33,7 @@ int main()
     printf("%s\n", new_folder.folders[0].filename);
     
     
-    printf("\n%d\n", addFolder("soso2", &new_folder));
+    printf("\n%d\n", addFolder("sos2", &new_folder));
     printf("%d\n", new_folder.exists_into);
     printf("%d\n", new_folder.folders_count_cur);
     printf("%d\n", new_folder.files_count_cur);
@@ -43,6 +47,7 @@ int main()
     return SUCCESS;
 }
 
-// нужно ли добавить верхнего родителя?
-// про одинаковые имена файлов/папок
-// ls по алфавиту?
+// нужно ли добавить верхнего родителя? (да)
+// про одинаковые имена файлов/папок (да)
+// ls по алфавиту? (нет)
+// Дата - название - расширение (табличка)

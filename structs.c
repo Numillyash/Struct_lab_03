@@ -107,6 +107,8 @@ int addFolder(char* folder_name, Folder* fld)
         free(buffer);
     }
 
+    fld->folders[fld->folders_count_cur].parent = fld;
+
     return SUCCESS;
 }
 
@@ -144,6 +146,8 @@ int addFile(char* file_name, char* extension, Folder* fld)
 		}
         free(buffer);
     }
+
+    fld->files[fld->files_count_cur].parent = fld;
 
     return SUCCESS;
 }
