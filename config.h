@@ -15,13 +15,6 @@
 #include <sys/stat.h>
 
 // input console checking
-#define HELP_CONSOLE_OPTION_1 "-h"
-#define HELP_CONSOLE_OPTION_2 "--help"
-#define GENKEY_CONSOLE_OPTION "genkey"
-#define SIGNATURE_CONSOLE_OPTION "sign"
-#define CHECK_CONSOLE_OPTION "check"
-#define ENCRYPT_CONSOLE_OPTION "encrypt"
-#define DECRYPT_CONSOLE_OPTION "decrypt"
 
 // boolean
 #define BOOL int
@@ -34,7 +27,8 @@
 /// <summary>
 /// Error codes
 /// </summary>
-typedef enum {
+typedef enum
+{
 	SUCCESS,
 	FAILURE,
 	NO_ARGUMENTS_FAILURE,
@@ -45,14 +39,19 @@ typedef enum {
 	FILENAME_SYMBOL_FAILURE,
 	FILENAME_ENDING_FAILURE,
 	FORMAT_FAILURE,
+	EXISTING_NAME_FAILURE,
 	DEBUG_EXIT_CODE = 100
 } ERROR_CODE;
 
 // fast funcs
-#define swap(a,b); b = a+b; a = b-a; b = b-a;
+#define swap(a, b) \
+	;              \
+	b = a + b;     \
+	a = b - a;     \
+	b = b - a;
 #ifdef _WIN32
 #else
-#define max(a,b) (a>b)? a : b
+#define max(a, b) (a > b) ? a : b
 #endif
 
 #endif // !CONFIG_H
