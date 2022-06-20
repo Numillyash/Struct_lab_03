@@ -38,6 +38,8 @@ typedef struct _Folder
     struct _Folder *parent;
 } Folder;
 
+int checkFolderExists(char* folder_name, Folder *fld);
+
 int createFolder(char *folder_name, Folder *folder);
 
 int addFolder(char *folder_name, Folder *fld);

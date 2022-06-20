@@ -44,6 +44,17 @@ int check_ext(char *ext)
     return SUCCESS;
 }
 
+int checkFolderExists(char* folder_name, Folder *fld)
+{
+    int i;
+    for (i = 0; i < fld->folders_count_cur; i++)
+        {
+            if (!strcmp(folder_name, fld->folders[i].filename))
+                return EXISTING_NAME_FAILURE;
+        }
+    return SUCCESS;
+}
+
 int createFile(char *file_name, char *extension, File *file)
 {
     ERROR_CODE errno;
@@ -109,10 +120,9 @@ int addFolder(char *folder_name, Folder *fld)
         Folder newFolder;
         Folder *buffer;
 
-        for (i = 0; i < fld->folders_count_cur; i++)
+        if(checkFolderExists(folder_name, fld)) // если папки не существует...
         {
-            if (!strcmp(folder_name, fld->folders[i].filename))
-                return EXISTING_NAME_FAILURE;
+            return EXISTING_NAME_FAILURE;
         }
 
         errno = createFolder(folder_name, &newFolder);
