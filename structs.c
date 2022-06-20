@@ -55,6 +55,17 @@ int checkFolderExists(char* folder_name, Folder *fld)
     return SUCCESS;
 }
 
+int checkFileExists(char* file_name, char* extension, Folder *fld)
+{
+    int i;
+    for (i = 0; i < fld->files_count_cur; i++)
+        {
+            if (!strcmp(extension, fld->files[i].extension) && !strcmp(file_name, fld->files[i].filename))
+                return EXISTING_NAME_FAILURE;
+        }
+    return SUCCESS;
+}
+
 int createFile(char *file_name, char *extension, File *file)
 {
     ERROR_CODE errno;
@@ -168,10 +179,9 @@ int addFile(char *file_name, char *extension, Folder *fld)
         File newFile;
         File *buffer;
 
-        for (i = 0; i < fld->files_count_cur; i++)
+        if (checkFileExists(file_name, extension, fld))
         {
-            if (!strcmp(extension, fld->files[i].extension) && !strcmp(file_name, fld->files[i].filename))
-                return EXISTING_NAME_FAILURE;
+            return EXISTING_NAME_FAILURE;
         }
 
         errno = createFile(file_name, extension, &newFile);
