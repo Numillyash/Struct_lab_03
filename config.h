@@ -40,7 +40,8 @@ typedef enum
 	FILENAME_ENDING_FAILURE,
 	FORMAT_FAILURE,
 	EXISTING_NAME_FAILURE,
-	DEBUG_EXIT_CODE = 100
+	DEBUG_EXIT_CODE = 100,
+	WRONG_OPTION
 } ERROR_CODE;
 
 // fast funcs
@@ -53,5 +54,10 @@ typedef enum
 #else
 #define max(a, b) (a > b) ? a : b
 #endif
+
+#define MAX_COMMAND_LEN 200
+#define COMMAND_COUNT 6
+
+const char allowedCommands[][200] = {"cd", "ls", "rm", "mkdir", "touch", "find"};
 
 #endif // !CONFIG_H

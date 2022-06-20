@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+// #include "config.h"
+
 #define GETSTRING_ERR_RE -1
 #define GETSTRING_ERR_OVERFLOW -2
-
-#define MAX_COMMAND_LEN 200
 
 void clearExtraInput()
 {
