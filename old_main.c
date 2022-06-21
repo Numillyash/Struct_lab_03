@@ -1,4 +1,5 @@
 #include "structs.h"
+#include "config.h"
 #include <stdlib.h>
 
 int main()

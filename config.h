@@ -55,7 +55,6 @@ typedef enum
 #define max(a, b) (a > b) ? a : b
 #endif
 
-#define MAX_COMMAND_LEN 200
 #define COMMAND_COUNT 6
 
 const char allowedCommands[][200] = {"cd", "ls", "rm", "mkdir", "touch", "find"};

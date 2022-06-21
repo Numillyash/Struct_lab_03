@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// #include "config.h"
+#define MAX_COMMAND_LEN 200
 
 #define GETSTRING_ERR_RE -1
 #define GETSTRING_ERR_OVERFLOW -2
