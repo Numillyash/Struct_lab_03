@@ -57,6 +57,6 @@ typedef enum
 
 #define COMMAND_COUNT 6
 
-const char allowedCommands[][200] = {"cd", "ls", "rm", "mkdir", "touch", "find"};
+static const char allowedCommands[][200] = {"cd", "ls", "rm", "mkdir", "touch", "find"};
 
 #endif // !CONFIG_H
