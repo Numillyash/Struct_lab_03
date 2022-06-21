@@ -20,11 +20,23 @@ int main(int argc, char** argv)
 
     addFolder("test11", &RootFolder.folders[0]);
 
-    Folder* ResultFolder;
-    File* ResultFile;
+    Folder* ResultFolder = NULL;
+    File* ResultFile = NULL;
 
-    iResult = checkArgumentValid("ls", "/test1/", &RootFolder, CurrentFolder, ResultFolder, ResultFile);
+    printf("!!! %d\n", &RootFolder.folders[0]);
+
+    // iResult = checkArgumentValid("ls", "/test1/", &RootFolder, CurrentFolder, ResultFolder, ResultFile);
+    iResult = checkMajorArgumenntValid("/", &RootFolder, CurrentFolder, &ResultFolder, &ResultFile);
     printf("%d\n", iResult);
+
+    if (ResultFolder != NULL)
+    {
+        printf("%s\n", ResultFolder->filename);
+        print_list(ResultFolder, 0);
+    }
+
+    else
+        printf("ResultFolder is NULL\n");
 
     // char* buf;
     

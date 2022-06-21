@@ -56,7 +56,7 @@ int checkMinorArgumentValid(char* command, char* argument)
 		return FAILURE;
 }
 
-int checkMajorArgumenntValid(char* argument, Folder* RootFolder, Folder* CurrentFolder, Folder* ResultFolder, File* ResultFile)
+int checkMajorArgumenntValid(char* argument, Folder* RootFolder, Folder* CurrentFolder, Folder** ResultFolder, File** ResultFile)
 {
 	Folder* ptr;
 	char* path = (char*) malloc(MAX_COMMAND_LEN);
@@ -151,7 +151,7 @@ int checkMajorArgumenntValid(char* argument, Folder* RootFolder, Folder* Current
 						free(filename);
 						free(extension);
 
-						ResultFile = &ptr->files[i];
+						*ResultFile = &ptr->files[i];
 						return OBJECT_FILE;
 					}
 				}
@@ -168,11 +168,12 @@ int checkMajorArgumenntValid(char* argument, Folder* RootFolder, Folder* Current
 	}
 
 	free(path);
-	ResultFolder = ptr;
+	*ResultFolder = ptr;
+	// printf("--- %d %d\n", ptr, ResultFolder);
 	return OBJECT_FOLDER;
 }
 
-int checkArgumentValid(char* command, char* argument, Folder* RootFolder, Folder* CurrentFolder, Folder* resultFolder, File* resultFile)
+int checkArgumentValid(char* command, char* argument, Folder* RootFolder, Folder* CurrentFolder, Folder** resultFolder, File** resultFile)
 {
 	Folder* _ResultFolder;
 	File* _ResultFile;
@@ -204,11 +205,13 @@ int checkArgumentValid(char* command, char* argument, Folder* RootFolder, Folder
 		if (iResult == OBJECT_FILE)
 		{
 			resultFile = _ResultFile;
+			printf("- resultFile: %d %d", resultFile, _ResultFile); // TODO: Delete debug
 		}
 
 		if (iResult == OBJECT_FOLDER)
 		{
 			resultFolder = _ResultFolder;
+			printf("- resultFolder: %d %d", resultFolder, _ResultFolder); // TODO: Delete debug
 		}
 	}
 	return SUCCESS;
