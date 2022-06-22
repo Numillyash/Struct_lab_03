@@ -250,3 +250,55 @@ int print_list(Folder *fld, int mode)
         printf("└──────────┴──────────┴────────────────────────────────────────────────────┘\n");
     }
 }
+
+void delete_file(File *deleting)
+{
+    int i; //iterator
+    int file_ind=-1;
+    if (deleting != NULL) {
+        Folder* parent = deleting->parent;
+
+        for (i = 0; i < parent->files_count_cur; i++)
+        {
+            if (parent->files[i] == deleting)
+                file_ind = i;
+        }
+
+        for (i = file_ind+1; i < parent->files_count_cur; i++)
+        {
+            parent->files[i] = parent->files[i + 1];
+        }
+
+        parent->files[parent->files_count_cur - 1] = NULL;
+        parent->files_count_cur--;
+    }
+}
+
+void delete_folder(Folder* deleting)
+{
+    int i; //iterator
+    int fold_ind = -1;
+    if (deleting != NULL) {
+        Folder* parent = deleting->parent;
+
+        for (i = 0; i < parent->folders_count_cur; i++)
+        {
+            if (parent->folders[i] == deleting)
+                fold_ind = i;
+        }
+
+        free(deleting->files);
+        while (deleting->folders_count_cur)
+        {
+            delete_folder(deleting->folders[0]);
+        }
+        free(deleting->folders);
+
+        for (i = fold_ind + 1; i < parent->folders_count_cur; i++)
+        {
+            parent->folders[i] = parent->folders[i + 1];
+        }
+        parent->folders[parent->folders_count_cur - 1] = NULL;
+        parent->folders_count_cur--;
+    }
+}
