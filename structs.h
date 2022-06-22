@@ -56,4 +56,6 @@ void delete_folder(Folder *deleting);
 
 void find_folder(char *name, Folder *parent);
 
+void find_file(char *name, char *ext, Folder *parent);
+
 #endif
