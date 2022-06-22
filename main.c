@@ -1,12 +1,12 @@
 #include <stdio.h>
 
 // #include "structs.h"
-#include "include/ui.h"
+
 #include "handler.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    Folder* CurrentFolder;
+    Folder *CurrentFolder;
     Folder RootFolder;
 
     createFolder("root", &RootFolder);
@@ -19,6 +19,19 @@ int main(int argc, char** argv)
     addFolder("test3", &RootFolder);
 
     addFolder("test11", &RootFolder.folders[0]);
+    addFolder("test12", &RootFolder.folders[0]);
+    addFolder("test11", &RootFolder.folders[0].folders[1]);
+    addFile("test", "exe", &RootFolder.folders[0]);
+
+    print_path(&RootFolder.folders[0].folders[0], NULL);
+
+    print_path(NULL, &RootFolder.folders[0].files[0]);
+
+    find_folder("test11", &RootFolder);
+
+    delete_folder(&RootFolder.folders[0].folders[1].folders[0]);
+
+    find_folder("test11", &RootFolder);
 
     // Folder* ResultFolder = NULL;
     // File* ResultFile = NULL;
@@ -37,22 +50,22 @@ int main(int argc, char** argv)
 
     // else
     //     printf("ResultFolder is NULL\n");
+    /*
+        char *buf;
 
-    char* buf;
-    
-    while (1)
-    {
-        printf("%s > ", CurrentFolder->filename);
-        buf = commandCallHandler();
-
-        if (buf == NULL)
+        while (1)
         {
-            printf("Input too long!\n");
-        }
+            printf("%s > ", CurrentFolder->filename);
+            buf = commandCallHandler();
 
-        iResult = commandParserHandler(buf, &RootFolder, &CurrentFolder);
-        printf("result: %d\n", iResult);
-    }
+            if (buf == NULL)
+            {
+                printf("Input too long!\n");
+            }
+
+            iResult = commandParserHandler(buf, &RootFolder, &CurrentFolder);
+            printf("result: %d\n", iResult);
+        }*/
 
     return 0;
 }

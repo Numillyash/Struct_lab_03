@@ -38,7 +38,7 @@ typedef struct _Folder
     struct _Folder *parent;
 } Folder;
 
-int checkFolderExists(char* folder_name, Folder *fld);
+int checkFolderExists(char *folder_name, Folder *fld);
 
 int createFolder(char *folder_name, Folder *folder);
 
@@ -47,5 +47,13 @@ int addFolder(char *folder_name, Folder *fld);
 int addFile(char *file_name, char *extension, Folder *fld);
 
 int print_list(Folder *fld, int mode);
+
+int print_path(Folder *fld, File *fil);
+
+void delete_file(File *deleting);
+
+void delete_folder(Folder *deleting);
+
+void find_folder(char *name, Folder *parent);
 
 #endif

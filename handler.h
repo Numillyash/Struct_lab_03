@@ -1,3 +1,4 @@
+#include "include/ui.h"
 #include "structs.h"
 #include <stdio.h>
 
@@ -7,20 +8,20 @@
 #define OBJECT_FOLDER 1
 #define OBJECT_FILE 2
 
-int checkCommandValid(char* command)
+int checkCommandValid(char *command)
 {
-    for (size_t i = 0; i < COMMAND_COUNT; i++)
-    {
-        if (strcmp(allowedCommands[i], command) == 0)
-        {
-            return SUCCESS;
-        }
-    }
-    
-    return FAILURE;
+	for (size_t i = 0; i < COMMAND_COUNT; i++)
+	{
+		if (strcmp(allowedCommands[i], command) == 0)
+		{
+			return SUCCESS;
+		}
+	}
+
+	return FAILURE;
 }
 
-int checkMinorArgumentValid(char* command, char* argument)
+int checkMinorArgumentValid(char *command, char *argument)
 {
 	if (argument[1] == 'l' || argument[1] == 'r')
 	{
@@ -56,16 +57,16 @@ int checkMinorArgumentValid(char* command, char* argument)
 		return FAILURE;
 }
 
-int checkMajorArgumentValid(char* argument, Folder* RootFolder, Folder* CurrentFolder, Folder** ResultFolder, File** ResultFile)
+int checkMajorArgumentValid(char *argument, Folder *RootFolder, Folder *CurrentFolder, Folder **ResultFolder, File **ResultFile)
 {
-	Folder* ptr;
-	char* path = (char*) malloc(MAX_COMMAND_LEN);
+	Folder *ptr;
+	char *path = (char *)malloc(MAX_COMMAND_LEN);
 
 	strcpy(path, argument);
-	
+
 	for (size_t i = 0; i < strlen(path); i++)
 	{
-		if(path[i] == '\n')
+		if (path[i] == '\n')
 		{
 			path[i] = '\0';
 		}
@@ -88,7 +89,7 @@ int checkMajorArgumentValid(char* argument, Folder* RootFolder, Folder* CurrentF
 
 	int foundFlag;
 	while (istr != NULL)
-	{	
+	{
 		foundFlag = 1;
 		for (size_t i = 0; i < CurrentFolder->folders_count_cur; i++)
 		{
@@ -99,13 +100,13 @@ int checkMajorArgumentValid(char* argument, Folder* RootFolder, Folder* CurrentF
 				break;
 			}
 		}
-		
-		if(foundFlag)
+
+		if (foundFlag)
 		{
 			int isFileFlag = 0;
 			for (size_t i = 0; i < strlen(istr); i++)
 			{
-				if(istr[i] == '.')
+				if (istr[i] == '.')
 				{
 					isFileFlag = 1;
 					break;
@@ -114,8 +115,8 @@ int checkMajorArgumentValid(char* argument, Folder* RootFolder, Folder* CurrentF
 
 			if (isFileFlag)
 			{
-				char* filename = (char*) malloc(filename_lenth + 1);
-				char* extension = (char*) malloc(extinsion_lenth + 1);
+				char *filename = (char *)malloc(filename_lenth + 1);
+				char *extension = (char *)malloc(extinsion_lenth + 1);
 				int extFlag = 0;
 
 				int writeCount = 0;
@@ -129,8 +130,8 @@ int checkMajorArgumentValid(char* argument, Folder* RootFolder, Folder* CurrentF
 						writeCount = 0;
 						continue;
 					}
-					
-					if(extFlag)
+
+					if (extFlag)
 					{
 						filename[writeCount] = istr[i];
 					}
@@ -159,7 +160,7 @@ int checkMajorArgumentValid(char* argument, Folder* RootFolder, Folder* CurrentF
 				free(filename);
 				free(extension);
 			}
-			
+
 			printf("Cannot resolve %s\n", istr);
 			return WRONG_ARGUMENT_FAILURE;
 		}
@@ -173,21 +174,21 @@ int checkMajorArgumentValid(char* argument, Folder* RootFolder, Folder* CurrentF
 	return OBJECT_FOLDER;
 }
 
-int checkArgumentValid(char* command, char* argument, Folder* RootFolder, Folder* CurrentFolder, Folder** resultFolder, File** resultFile)
+int checkArgumentValid(char *command, char *argument, Folder *RootFolder, Folder *CurrentFolder, Folder **resultFolder, File **resultFile)
 {
-	Folder* _ResultFolder;
-	File* _ResultFile;
+	Folder *_ResultFolder;
+	File *_ResultFile;
 
 	int iResult;
 
-	if(argument == NULL)
+	if (argument == NULL)
 	{
 		return WRONG_ARGUMENT_FAILURE;
 	}
 
-	if(argument[0] == '-')
+	if (argument[0] == '-')
 	{
-		if(checkMinorArgumentValid(command, argument))
+		if (checkMinorArgumentValid(command, argument))
 		{
 			return WRONG_OPTION;
 		}
@@ -215,7 +216,7 @@ int checkArgumentValid(char* command, char* argument, Folder* RootFolder, Folder
 	return SUCCESS;
 }
 
-int executeCommand(char* command, char* minorArg, Folder* majorArgFolder, File* majorArgFile, int majorArgIsFolder, Folder* RootFolder, Folder** CurrentFolder)
+int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *majorArgFile, int majorArgIsFolder, Folder *RootFolder, Folder **CurrentFolder)
 {
 	if (!strcmp(command, "cd"))
 	{
@@ -223,14 +224,14 @@ int executeCommand(char* command, char* minorArg, Folder* majorArgFolder, File* 
 		{
 			return FAILURE;
 		}
-		
+
 		*CurrentFolder = majorArgFolder;
 		return SUCCESS;
 	}
 
 	else if (!strcmp(command, "ls"))
 	{
-		Folder* PrintDirectory;
+		Folder *PrintDirectory;
 		if (!majorArgIsFolder)
 		{
 			PrintDirectory = *CurrentFolder;
@@ -240,7 +241,7 @@ int executeCommand(char* command, char* minorArg, Folder* majorArgFolder, File* 
 		{
 			PrintDirectory = majorArgFolder;
 		}
-		
+
 		if (minorArg != NULL)
 			print_list(PrintDirectory, 1);
 
@@ -253,7 +254,6 @@ int executeCommand(char* command, char* minorArg, Folder* majorArgFolder, File* 
 		if (!majorArgIsFolder)
 		{
 			// Работаем с файлом, удаление MajorArgFile
-			
 		}
 
 		else
@@ -269,28 +269,28 @@ int executeCommand(char* command, char* minorArg, Folder* majorArgFolder, File* 
 	}
 }
 
-int commandParserHandler(char* input, Folder* RootFolder, Folder** CurrentFolder)
+int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder)
 {
 	int result = SUCCESS; // Если что-то пойдет не так, то он изменится
 
-	char* sep = " ";
-	char* str = (char*) malloc(MAX_COMMAND_LEN), *istr;
+	char *sep = " ";
+	char *str = (char *)malloc(MAX_COMMAND_LEN), *istr;
 
 	int i = 0; // Счетчик обработанных лексемм
-	
+
 	strcpy(str, input);
 	istr = strtok(str, sep);
 
-	char* command = (char*) malloc(MAX_COMMAND_LEN);
-	char* arg1 = (char*) malloc(MAX_COMMAND_LEN);
-	char* arg2 = (char*) malloc(MAX_COMMAND_LEN);
+	char *command = (char *)malloc(MAX_COMMAND_LEN);
+	char *arg1 = (char *)malloc(MAX_COMMAND_LEN);
+	char *arg2 = (char *)malloc(MAX_COMMAND_LEN);
 
 	int optionFlag = 0;
 
-	File* ResultFile = NULL;
-	Folder* ResultFolder = NULL;
+	File *ResultFile = NULL;
+	Folder *ResultFolder = NULL;
 
-	while(istr != NULL)
+	while (istr != NULL)
 	{
 		// Обрабатываем команду/аргумент
 		switch (i)
@@ -304,8 +304,8 @@ int commandParserHandler(char* input, Folder* RootFolder, Folder** CurrentFolder
 					istr[i] = '\0';
 				}
 			}
-			
-            if (checkCommandValid(istr)) // Если команда неправильная
+
+			if (checkCommandValid(istr)) // Если команда неправильная
 			{
 				printf("Incorrect Command!");
 				result = FAILURE;
@@ -313,7 +313,7 @@ int commandParserHandler(char* input, Folder* RootFolder, Folder** CurrentFolder
 			}
 			strcpy(command, istr);
 			break;
-		
+
 		case 1:
 			// аргумент 1
 			if (checkArgumentValid(command, istr, RootFolder, *CurrentFolder, &ResultFolder, &ResultFile))
@@ -341,10 +341,10 @@ int commandParserHandler(char* input, Folder* RootFolder, Folder** CurrentFolder
 				result = WRONG_OPTION;
 				goto cleanup;
 			}
-			
-			strcpy (arg2, istr);
+
+			strcpy(arg2, istr);
 			break;
-		
+
 		default:
 			break;
 		}
@@ -357,10 +357,11 @@ int commandParserHandler(char* input, Folder* RootFolder, Folder** CurrentFolder
 	result = executeCommand(command, arg1, ResultFolder, ResultFile, ResultFolder != NULL, RootFolder, CurrentFolder);
 	// printf("- exec: %d", r);
 
-	cleanup: free(str);
+cleanup:
+	free(str);
 	free(command);
 	free(arg1);
 	free(arg2);
-	
+
 	return result;
 }

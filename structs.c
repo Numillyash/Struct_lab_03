@@ -44,25 +44,25 @@ int check_ext(char *ext)
     return SUCCESS;
 }
 
-int checkFolderExists(char* folder_name, Folder *fld)
+int checkFolderExists(char *folder_name, Folder *fld)
 {
     int i;
     for (i = 0; i < fld->folders_count_cur; i++)
-        {
-            if (!strcmp(folder_name, fld->folders[i].filename))
-                return EXISTING_NAME_FAILURE;
-        }
+    {
+        if (!strcmp(folder_name, fld->folders[i].filename))
+            return EXISTING_NAME_FAILURE;
+    }
     return SUCCESS;
 }
 
-int checkFileExists(char* file_name, char* extension, Folder *fld)
+int checkFileExists(char *file_name, char *extension, Folder *fld)
 {
     int i;
     for (i = 0; i < fld->files_count_cur; i++)
-        {
-            if (!strcmp(extension, fld->files[i].extension) && !strcmp(file_name, fld->files[i].filename))
-                return EXISTING_NAME_FAILURE;
-        }
+    {
+        if (!strcmp(extension, fld->files[i].extension) && !strcmp(file_name, fld->files[i].filename))
+            return EXISTING_NAME_FAILURE;
+    }
     return SUCCESS;
 }
 
@@ -131,7 +131,7 @@ int addFolder(char *folder_name, Folder *fld)
         Folder newFolder;
         Folder *buffer;
 
-        if(checkFolderExists(folder_name, fld)) // если папки не существует...
+        if (checkFolderExists(folder_name, fld)) // если папки не существует...
         {
             return EXISTING_NAME_FAILURE;
         }
@@ -165,7 +165,7 @@ int addFolder(char *folder_name, Folder *fld)
             free(buffer);
         }
 
-        fld->folders[fld->folders_count_cur].parent = fld;
+        fld->folders[fld->folders_count_cur - 1].parent = fld;
 
         return SUCCESS;
     }
@@ -213,7 +213,7 @@ int addFile(char *file_name, char *extension, Folder *fld)
             free(buffer);
         }
 
-        fld->files[fld->files_count_cur].parent = fld;
+        fld->files[fld->files_count_cur - 1].parent = fld;
 
         return SUCCESS;
     }
@@ -253,44 +253,44 @@ int print_list(Folder *fld, int mode)
 
 void delete_file(File *deleting)
 {
-    int i; //iterator
-    int file_ind=-1;
-    if (deleting != NULL) {
-        Folder* parent = deleting->parent;
+    int i; // iterator
+    int file_ind = -1;
+    if (deleting != NULL)
+    {
+        Folder *parent = deleting->parent;
 
         for (i = 0; i < parent->files_count_cur; i++)
         {
-            if (parent->files[i] == deleting)
+            if (&(parent->files[i]) == deleting)
                 file_ind = i;
         }
 
-        for (i = file_ind+1; i < parent->files_count_cur; i++)
+        for (i = file_ind + 1; i < parent->files_count_cur; i++)
         {
             parent->files[i] = parent->files[i + 1];
         }
-
-        parent->files[parent->files_count_cur - 1] = NULL;
         parent->files_count_cur--;
     }
 }
 
-void delete_folder(Folder* deleting)
+void delete_folder(Folder *deleting)
 {
-    int i; //iterator
+    int i; // iterator
     int fold_ind = -1;
-    if (deleting != NULL) {
-        Folder* parent = deleting->parent;
+    if (deleting != NULL)
+    {
+        Folder *parent = deleting->parent;
 
         for (i = 0; i < parent->folders_count_cur; i++)
         {
-            if (parent->folders[i] == deleting)
+            if (&(parent->folders[i]) == deleting)
                 fold_ind = i;
         }
 
         free(deleting->files);
         while (deleting->folders_count_cur)
         {
-            delete_folder(deleting->folders[0]);
+            delete_folder(&(deleting->folders[0]));
         }
         free(deleting->folders);
 
@@ -298,14 +298,14 @@ void delete_folder(Folder* deleting)
         {
             parent->folders[i] = parent->folders[i + 1];
         }
-        parent->folders[parent->folders_count_cur - 1] = NULL;
+        parent->folders[parent->folders_count_cur - 1];
         parent->folders_count_cur--;
     }
 }
 
-int print_path(Folder* fld, File* fil)
+int print_path(Folder *fld, File *fil)
 {
-    Folder* parent;
+    Folder *parent;
 
     if (fld != NULL)
     {
@@ -331,24 +331,27 @@ int print_path(Folder* fld, File* fil)
     return 1;
 }
 
-void find_folder(char* name, Folder* parent)
+void find_folder(char *name, Folder *parent)
 {
     int i = 0;
+    // print_list(parent, 1);
     for (i = 0; i < parent->folders_count_cur; i++)
     {
-        if (checkFolderExists(name, parent->folders[i]) == EXISTING_NAME_FAILURE)
-            print_path(parent->folders[i]);
-        find_folder(name, parent->folders[i]);
+        // printf("Im in %s\n", parent->folders[i].filename);
+
+        if (!strcmp(name, parent->folders[i].filename))
+            print_path(&(parent->folders[i]), NULL);
+        find_folder(name, &(parent->folders[i]));
     }
 }
 
-void find_file(char* name, char* ext, Folder* parent)
+void find_file(char *name, char *ext, Folder *parent)
 {
     int i = 0;
     for (i = 0; i < parent->files_count_cur; i++)
     {
-        if (checkFileExists(name, ext, parent->files[i]) == EXISTING_NAME_FAILURE)
-            print_path(parent->files[i]);
-        find_file(name, ext, parent->folders[i]);
+        if (!strcmp(name, parent->files[i].filename) && !strcmp(ext, parent->files[i].extension))
+            print_path(NULL, &(parent->files[i]));
+        find_file(name, ext, &(parent->folders[i]));
     }
 }
