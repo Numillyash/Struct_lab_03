@@ -56,7 +56,7 @@ int checkMinorArgumentValid(char* command, char* argument)
 		return FAILURE;
 }
 
-int checkMajorArgumenntValid(char* argument, Folder* RootFolder, Folder* CurrentFolder, Folder** ResultFolder, File** ResultFile)
+int checkMajorArgumentValid(char* argument, Folder* RootFolder, Folder* CurrentFolder, Folder** ResultFolder, File** ResultFile)
 {
 	Folder* ptr;
 	char* path = (char*) malloc(MAX_COMMAND_LEN);
@@ -196,7 +196,7 @@ int checkArgumentValid(char* command, char* argument, Folder* RootFolder, Folder
 	else
 	{
 		// Обрабатываем объект
-		iResult = checkMajorArgumenntValid(argument, RootFolder, CurrentFolder, _ResultFolder, _ResultFile);
+		iResult = checkMajorArgumentValid(argument, RootFolder, CurrentFolder, &_ResultFolder, &_ResultFile);
 		if (iResult == WRONG_ARGUMENT_FAILURE)
 		{
 			return WRONG_ARGUMENT_FAILURE;
@@ -204,22 +204,40 @@ int checkArgumentValid(char* command, char* argument, Folder* RootFolder, Folder
 
 		if (iResult == OBJECT_FILE)
 		{
-			resultFile = _ResultFile;
-			printf("- resultFile: %d %d", resultFile, _ResultFile); // TODO: Delete debug
+			*resultFile = _ResultFile;
 		}
 
 		if (iResult == OBJECT_FOLDER)
 		{
-			resultFolder = _ResultFolder;
-			printf("- resultFolder: %d %d", resultFolder, _ResultFolder); // TODO: Delete debug
+			*resultFolder = _ResultFolder;
 		}
 	}
 	return SUCCESS;
 }
 
+int executeCommand(char* command, char* minorArg, Folder* majorArgFolder, File* majorArgFile, int majorArgIsFolder, Folder* RootFolder, Folder** CurrentFolder)
+{
+	if (!strcmp(command, "cd"))
+	{
+		printf("COMMAND: cd\n");
+		printf("%d", majorArgFile);
+		if (!majorArgIsFolder)
+		{
+			return FAILURE;
+		}
+		
+		*CurrentFolder = majorArgFolder;
+		return SUCCESS;
+	}
 
+	else
+	{
+		printf("Unknown command: %s", command);
+		return FAILURE;
+	}
+}
 
-int commandParserHandler(char* input, Folder* RootFolder, Folder* CurrentFolder)
+int commandParserHandler(char* input, Folder* RootFolder, Folder** CurrentFolder)
 {
 	int result = SUCCESS; // Если что-то пойдет не так, то он изменится
 
@@ -257,7 +275,7 @@ int commandParserHandler(char* input, Folder* RootFolder, Folder* CurrentFolder)
 		
 		case 1:
 			// аргумент 1
-			if (checkArgumentValid(command, istr, RootFolder, CurrentFolder, ResultFolder, ResultFile))
+			if (checkArgumentValid(command, istr, RootFolder, *CurrentFolder, &ResultFolder, &ResultFile))
 			{
 				result = WRONG_OPTION;
 				goto cleanup;
@@ -277,7 +295,7 @@ int commandParserHandler(char* input, Folder* RootFolder, Folder* CurrentFolder)
 				goto cleanup;
 			}
 
-			if (checkArgumentValid(command, istr, RootFolder, CurrentFolder, ResultFolder, ResultFile))
+			if (checkArgumentValid(command, istr, RootFolder, *CurrentFolder, &ResultFolder, &ResultFile))
 			{
 				result = WRONG_OPTION;
 				goto cleanup;
@@ -295,6 +313,8 @@ int commandParserHandler(char* input, Folder* RootFolder, Folder* CurrentFolder)
 	}
 
 	printf("%s, %s, %s", command, arg1, arg2);
+	result = executeCommand(command, arg1, ResultFolder, ResultFile, ResultFolder != NULL, RootFolder, CurrentFolder);
+	// printf("- exec: %d", r);
 
 	cleanup: free(str);
 	free(command);
