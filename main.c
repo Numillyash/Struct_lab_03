@@ -23,15 +23,17 @@ int main(int argc, char **argv)
     addFolder("test11", &RootFolder.folders[0].folders[1]);
     addFile("test", "exe", &RootFolder.folders[0]);
 
-    print_path(&RootFolder.folders[0].folders[0], NULL);
+    // print_path(&RootFolder.folders[0].folders[0], NULL);
 
-    print_path(NULL, &RootFolder.folders[0].files[0]);
-
-    find_folder("test11", &RootFolder);
-
-    delete_folder(&RootFolder.folders[0].folders[1].folders[0]);
+    // print_path(NULL, &RootFolder.folders[0].files[0]);
 
     find_folder("test11", &RootFolder);
+
+    find_file("test", "exe", &RootFolder);
+
+    // delete_folder(&RootFolder.folders[0].folders[1].folders[0]);
+
+    // find_folder("test11", &RootFolder);
 
     // Folder* ResultFolder = NULL;
     // File* ResultFile = NULL;

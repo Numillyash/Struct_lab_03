@@ -303,55 +303,93 @@ void delete_folder(Folder *deleting)
     }
 }
 
-int print_path(Folder *fld, File *fil)
+int get_path(char *path, Folder *fld, File *fil)
 {
     Folder *parent;
+    char *new_path;
+    int n = strlen(path);
 
     if (fld != NULL)
     {
         parent = fld->parent;
-        printf("%s", fld->filename);
+        new_path = (char *)malloc(n + 1 + strlen(fld->filename) + 1);
+
+        new_path[0] = '\0';
+
+        strcat(new_path, "\\");
+        strcat(new_path, fld->filename);
+        strcat(new_path, path);
+        free(path);
+
+        path = new_path;
     }
     else if (fil != NULL)
     {
         parent = fil->parent;
-        printf("%s.%s", fil->filename, fil->extension);
+        new_path = (char *)malloc(n + 1 + strlen(fil->filename) + 1 + strlen(fil->extension) + 1);
+
+        new_path[0] = '\0';
+
+        strcat(new_path, "\\");
+        strcat(new_path, fil->filename);
+        strcat(new_path, ".");
+        strcat(new_path, fil->extension);
+        strcat(new_path, path);
+        free(path);
+
+        path = new_path;
     }
     else
     {
         return 0;
     }
+
     if (parent != NULL)
     {
-        printf("<-");
-        print_path(parent, NULL);
+        get_path(path, parent, NULL);
     }
     else
-        printf("\n");
+    {
+        printf("%s\n", path);
+        free(path);
+    }
     return 1;
 }
 
 void find_folder(char *name, Folder *parent)
 {
     int i = 0;
+    char *path;
     // print_list(parent, 1);
     for (i = 0; i < parent->folders_count_cur; i++)
     {
         // printf("Im in %s\n", parent->folders[i].filename);
 
         if (!strcmp(name, parent->folders[i].filename))
-            print_path(&(parent->folders[i]), NULL);
+        {
+            path = (char *)malloc(1);
+            path[0] = '\0';
+            get_path(path, &(parent->folders[i]), NULL);
+        }
         find_folder(name, &(parent->folders[i]));
     }
 }
 
 void find_file(char *name, char *ext, Folder *parent)
 {
+    char *path;
     int i = 0;
     for (i = 0; i < parent->files_count_cur; i++)
     {
         if (!strcmp(name, parent->files[i].filename) && !strcmp(ext, parent->files[i].extension))
-            print_path(NULL, &(parent->files[i]));
+        {
+            path = (char *)malloc(1);
+            path[0] = '\0';
+            get_path(path, NULL, &(parent->files[i]));
+        }
+    }
+    for (i = 0; i < parent->folders_count_cur; i++)
+    {
         find_file(name, ext, &(parent->folders[i]));
     }
 }

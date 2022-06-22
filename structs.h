@@ -48,7 +48,7 @@ int addFile(char *file_name, char *extension, Folder *fld);
 
 int print_list(Folder *fld, int mode);
 
-int print_path(Folder *fld, File *fil);
+int get_path(char *path, Folder *fld, File *fil);
 
 void delete_file(File *deleting);
 
