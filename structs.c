@@ -326,6 +326,8 @@ int print_path(Folder* fld, File* fil)
         printf("<-");
         print_path(parent, NULL);
     }
+    else
+        printf("\n");
     return 1;
 }
 
