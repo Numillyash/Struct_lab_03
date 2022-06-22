@@ -228,7 +228,7 @@ int executeCommand(char* command, char* minorArg, Folder* majorArgFolder, File* 
 		return SUCCESS;
 	}
 
-	if (!strcmp(command, "ls"))
+	else if (!strcmp(command, "ls"))
 	{
 		Folder* PrintDirectory;
 		if (!majorArgIsFolder)
@@ -246,6 +246,20 @@ int executeCommand(char* command, char* minorArg, Folder* majorArgFolder, File* 
 
 		else
 			print_list(PrintDirectory, 0);
+	}
+
+	else if (!strcmp(command, "rm"))
+	{
+		if (!majorArgIsFolder)
+		{
+			// Работаем с файлом, удаление MajorArgFile
+			
+		}
+
+		else
+		{
+			// Работаем с папкой, рекурсивное удаление MajorArgFolder
+		}
 	}
 
 	else
