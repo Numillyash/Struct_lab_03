@@ -219,8 +219,6 @@ int executeCommand(char* command, char* minorArg, Folder* majorArgFolder, File* 
 {
 	if (!strcmp(command, "cd"))
 	{
-		printf("COMMAND: cd\n");
-		printf("%d", majorArgFile);
 		if (!majorArgIsFolder)
 		{
 			return FAILURE;
@@ -228,6 +226,26 @@ int executeCommand(char* command, char* minorArg, Folder* majorArgFolder, File* 
 		
 		*CurrentFolder = majorArgFolder;
 		return SUCCESS;
+	}
+
+	if (!strcmp(command, "ls"))
+	{
+		Folder* PrintDirectory;
+		if (!majorArgIsFolder)
+		{
+			PrintDirectory = *CurrentFolder;
+		}
+
+		else
+		{
+			PrintDirectory = majorArgFolder;
+		}
+		
+		if (minorArg != NULL)
+			print_list(PrintDirectory, 1);
+
+		else
+			print_list(PrintDirectory, 0);
 	}
 
 	else
@@ -265,8 +283,17 @@ int commandParserHandler(char* input, Folder* RootFolder, Folder** CurrentFolder
 		{
 		case 0:
 			// команда
+			for (size_t i = 0; i < strlen(istr); i++)
+			{
+				if (istr[i] == '\n')
+				{
+					istr[i] = '\0';
+				}
+			}
+			
             if (checkCommandValid(istr)) // Если команда неправильная
 			{
+				printf("Incorrect Command!");
 				result = FAILURE;
 				goto cleanup;
 			}
@@ -312,7 +339,7 @@ int commandParserHandler(char* input, Folder* RootFolder, Folder** CurrentFolder
 		istr = strtok(NULL, sep); // Выделяем следующую часть
 	}
 
-	printf("%s, %s, %s", command, arg1, arg2);
+	printf("%s, %s, %s\n", command, arg1, arg2);
 	result = executeCommand(command, arg1, ResultFolder, ResultFile, ResultFolder != NULL, RootFolder, CurrentFolder);
 	// printf("- exec: %d", r);
 
