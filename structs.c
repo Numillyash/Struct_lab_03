@@ -302,3 +302,51 @@ void delete_folder(Folder* deleting)
         parent->folders_count_cur--;
     }
 }
+
+int print_path(Folder* fld, File* fil)
+{
+    Folder* parent;
+
+    if (fld != NULL)
+    {
+        parent = fld->parent;
+        printf("%s", fld->filename);
+    }
+    else if (fil != NULL)
+    {
+        parent = fil->parent;
+        printf("%s.%s", fil->filename, fil->extension);
+    }
+    else
+    {
+        return 0;
+    }
+    if (parent != NULL)
+    {
+        printf("<-");
+        print_path(parent, NULL);
+    }
+    return 1;
+}
+
+void find_folder(char* name, Folder* parent)
+{
+    int i = 0;
+    for (i = 0; i < parent->folders_count_cur; i++)
+    {
+        if (checkFolderExists(name, parent->folders[i]) == EXISTING_NAME_FAILURE)
+            print_path(parent->folders[i]);
+        find_folder(name, parent->folders[i]);
+    }
+}
+
+void find_file(char* name, char* ext, Folder* parent)
+{
+    int i = 0;
+    for (i = 0; i < parent->files_count_cur; i++)
+    {
+        if (checkFileExists(name, ext, parent->files[i]) == EXISTING_NAME_FAILURE)
+            print_path(parent->files[i]);
+        find_file(name, ext, parent->folders[i]);
+    }
+}
