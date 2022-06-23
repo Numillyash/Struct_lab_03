@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     addFolder("test11", &RootFolder.folders[0].folders[1]);
     addFile("test", "exe", &RootFolder.folders[0]);
 
-    print_list(&RootFolder, 1);
+    // print_list(&RootFolder, 1);
 
     // print_path(&RootFolder.folders[0].folders[0], NULL);
 
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 
     // find_file("test", "exe", &RootFolder);
 
-    delete_folder(&RootFolder.folders[0]);
+    // delete_folder(&RootFolder.folders[0]);
 
     // find_folder("test11", &RootFolder);
 

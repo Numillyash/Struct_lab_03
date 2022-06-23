@@ -323,6 +323,48 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 		free(ext);
 	}
 
+	else if (!strcmp(command, "touch"))
+	{
+		char *buf = (char *)malloc(MAX_ARG_LEN);
+		char *fname = (char *)malloc(MAX_ARG_LEN);
+		char *ext = (char *)malloc(MAX_ARG_LEN);
+
+		int count = 0;
+		printf("MinorArg: %s\n", minorArg);
+		strcpy(buf, minorArg);
+
+		char *sep = ".";
+		char *istr = strtok(buf, sep);
+
+		while (istr != NULL)
+		{
+			if (count == 0)
+			{
+				strcpy(fname, istr);
+				count++;
+			}
+
+			else
+			{
+				strcpy(ext, istr);
+				count++;
+				break;
+			}
+
+			istr = strtok(NULL, sep);
+		}
+		addFile(fname, ext, *CurrentFolder);
+
+		free(buf);
+		free(fname);
+		free(ext);
+	}
+
+	else if (!strcmp(command, "mkdir"))
+	{
+		addFolder(minorArg, *CurrentFolder);
+	}
+
 	else
 	{
 		printf("Unknown command: %s", command);
@@ -359,6 +401,8 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 
 	int optionFlag = 0;
 
+	int r1, r2;
+
 	File *ResultFile = NULL;
 	Folder *ResultFolder = NULL;
 
@@ -389,7 +433,10 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 
 		case 1:
 			// аргумент 1
-			if (strcmp(command, "find"))
+			r1 = strcmp(command, "mkdir");
+			r2 = strcmp(command, "touch");
+
+			if (strcmp(command, "find") && r1 && r2)
 			{
 				if (checkArgumentValid(command, istr, RootFolder, *CurrentFolder, &ResultFolder, &ResultFile))
 				{
@@ -403,7 +450,13 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 
 			else
 			{
-				optionFlag = 1;
+				if (!r1 || !r2)
+				{
+					optionFlag = 0;
+				}
+
+				else
+					optionFlag = 1;
 			}
 
 			strcpy(arg1, istr);
