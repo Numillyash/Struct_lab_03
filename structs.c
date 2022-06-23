@@ -312,7 +312,7 @@ void delete_folder(Folder *deleting)
     // print_list(deleting->parent, 1);
 }
 
-int save_path(Folder *fld, File *fil, FILE* fp)
+int save_path(Folder *fld, File *fil, FILE *fp)
 {
     Folder *parent;
     if (fld != NULL)
@@ -342,7 +342,6 @@ int save_path(Folder *fld, File *fil, FILE* fp)
     }
     else
     {
-        fprintf(fp, "/%s", fld->filename);
     }
 
     return 1;
