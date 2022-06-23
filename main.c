@@ -23,7 +23,11 @@ int main(int argc, char **argv)
     addFolder("test11", &RootFolder.folders[0].folders[1]);
     addFile("test", "exe", &RootFolder.folders[0]);
 
-    // print_list(&RootFolder, 1);
+    addFile("test3", "ex", &RootFolder);
+    addFile("tes2t", "exegjnsd", &RootFolder);
+
+    print_list_alt(&RootFolder, 0);
+    print_list_alt(&RootFolder, 1);
 
     // print_path(&RootFolder.folders[0].folders[0], NULL);
 

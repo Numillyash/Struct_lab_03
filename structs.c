@@ -251,6 +251,26 @@ int print_list(Folder *fld, int mode)
     }
 }
 
+int print_list_alt(Folder *fld, int mode)
+{
+    int i; // iterator
+
+    if (mode == 0) // simple
+    {
+        for (i = 0; i < fld->files_count_cur; i++)
+            printf("%s.%s\n", fld->files[i].filename, fld->files[i].extension);
+        for (i = 0; i < fld->folders_count_cur; i++)
+            printf("%s\n", fld->folders[i].filename);
+    }
+    if (mode == 1) // not simple
+    {
+        for (i = 0; i < fld->files_count_cur; i++)
+            printf("%s %s %s.%s\n", fld->files[i].creation_time, fld->files[i].creation_date, fld->files[i].filename, fld->files[i].extension);
+        for (i = 0; i < fld->folders_count_cur; i++)
+            printf("%s %s %s\n", fld->folders[i].creation_time, fld->folders[i].creation_date, fld->folders[i].filename);
+    }
+}
+
 void delete_file(File *deleting)
 {
     int i; // iterator
