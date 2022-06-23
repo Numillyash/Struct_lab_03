@@ -265,7 +265,7 @@ void delete_file(File *deleting)
                 file_ind = i;
         }
 
-        for (i = file_ind + 1; i < parent->files_count_cur; i++)
+        for (i = file_ind; i < parent->files_count_cur; i++)
         {
             parent->files[i] = parent->files[i + 1];
         }
