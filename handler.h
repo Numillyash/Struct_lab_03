@@ -247,7 +247,7 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 
 		else
 			print_list(PrintDirectory, 0);
-		
+
 		return SUCCESS;
 	}
 
@@ -256,11 +256,13 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 		if (!majorArgIsFolder)
 		{
 			// Работаем с файлом, удаление MajorArgFile
+			delete_file(majorArgFile);
 		}
 
 		else
 		{
 			// Работаем с папкой, рекурсивное удаление MajorArgFolder
+			delete_folder(majorArgFolder);
 		}
 
 		return SUCCESS;
@@ -270,16 +272,16 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 	{
 		printf("FIND!\n");
 
-		char* buf = (char*) malloc(MAX_ARG_LEN);
-		char* fname = (char*) malloc(MAX_ARG_LEN);
-		char* ext = (char*) malloc(MAX_ARG_LEN);
+		char *buf = (char *)malloc(MAX_ARG_LEN);
+		char *fname = (char *)malloc(MAX_ARG_LEN);
+		char *ext = (char *)malloc(MAX_ARG_LEN);
 
 		int count = 0;
 		printf("MinorArg: %s\n", minorArg);
 		strcpy(buf, minorArg);
 
-		char* sep = ".";
-		char* istr = strtok(buf, sep);
+		char *sep = ".";
+		char *istr = strtok(buf, sep);
 
 		while (istr != NULL)
 		{
@@ -298,7 +300,7 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 
 			istr = strtok(NULL, sep);
 		}
-		
+
 		printf("Count: %d\n", count);
 
 		if (count == 1)
@@ -345,7 +347,6 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 			str[i] = ' ';
 		}
 	}
-	
 
 	istr = strtok(str, sep);
 
@@ -431,7 +432,7 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 		istr = strtok(NULL, sep); // Выделяем следующую часть
 	}
 
-	printf("%d: %s, %s, %s\n", i ,command, arg1, arg2);
+	printf("%d: %s, %s, %s\n", i, command, arg1, arg2);
 	result = executeCommand(command, arg1, ResultFolder, ResultFile, ResultFolder != NULL, RootFolder, CurrentFolder);
 	// printf("- exec: %d", r);
 

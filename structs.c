@@ -275,6 +275,13 @@ void delete_file(File *deleting)
 
 void delete_folder(Folder *deleting)
 {
+    // char *p = (char *)malloc(1);
+    // p[0] = '\0';
+    // get_path(p, deleting, NULL);
+    //  printf("%d\n", deleting->folders_count_cur);
+    //  printf("%d\n", deleting->parent->folders_count_cur);
+
+    // print_list(deleting, 1);
     int i; // iterator
     int fold_ind = -1;
     if (deleting != NULL)
@@ -287,20 +294,22 @@ void delete_folder(Folder *deleting)
                 fold_ind = i;
         }
 
+        printf("%d\n", fold_ind);
+
         free(deleting->files);
         while (deleting->folders_count_cur)
         {
-            delete_folder(&(deleting->folders[0]));
+            delete_folder(&(deleting->folders[deleting->folders_count_cur - 1]));
         }
         free(deleting->folders);
 
-        for (i = fold_ind + 1; i < parent->folders_count_cur; i++)
+        for (i = fold_ind; i < parent->folders_count_cur; i++)
         {
             parent->folders[i] = parent->folders[i + 1];
         }
-        parent->folders[parent->folders_count_cur - 1];
         parent->folders_count_cur--;
     }
+    // print_list(deleting->parent, 1);
 }
 
 int get_path(char *path, Folder *fld, File *fil)
