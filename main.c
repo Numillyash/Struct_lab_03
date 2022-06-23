@@ -23,6 +23,8 @@ int main(int argc, char **argv)
     addFolder("test11", &RootFolder.folders[0].folders[1]);
     addFile("test", "exe", &RootFolder.folders[0]);
 
+    print_list(&RootFolder, 1);
+
     // print_path(&RootFolder.folders[0].folders[0], NULL);
 
     // print_path(NULL, &RootFolder.folders[0].files[0]);
@@ -31,7 +33,7 @@ int main(int argc, char **argv)
 
     // find_file("test", "exe", &RootFolder);
 
-    // delete_folder(&RootFolder.folders[0].folders[1].folders[0]);
+    delete_folder(&RootFolder.folders[0]);
 
     // find_folder("test11", &RootFolder);
 
@@ -52,22 +54,22 @@ int main(int argc, char **argv)
 
     // else
     //     printf("ResultFolder is NULL\n");
-    
-        char *buf;
 
-        while (1)
+    char *buf;
+
+    while (1)
+    {
+        printf("%s > ", CurrentFolder->filename);
+        buf = commandCallHandler();
+
+        if (buf == NULL)
         {
-            printf("%s > ", CurrentFolder->filename);
-            buf = commandCallHandler();
-
-            if (buf == NULL)
-            {
-                printf("Input too long!\n");
-            }
-
-            iResult = commandParserHandler(buf, &RootFolder, &CurrentFolder);
-            printf("result: %d\n", iResult);
+            printf("Input too long!\n");
         }
+
+        iResult = commandParserHandler(buf, &RootFolder, &CurrentFolder);
+        printf("result: %d\n", iResult);
+    }
 
     return 0;
 }
