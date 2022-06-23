@@ -16,6 +16,7 @@ int main(int argc, char **argv)
     char *buf;
 
     readRecords(CurrentFolder);
+    cansave = 1;
     printf("bruh2\n");
 
     while (1)

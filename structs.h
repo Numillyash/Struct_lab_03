@@ -48,7 +48,7 @@ int addFile(char *file_name, char *extension, Folder *fld);
 
 int print_list(Folder *fld, int mode);
 
-int save_path(Folder *fld, File *fil, FILE* fp);
+int save_path(int rec_count, Folder *fld, File *fil, FILE *fp);
 
 int get_path(Folder *fld, File *fil);
 

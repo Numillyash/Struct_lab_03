@@ -312,7 +312,7 @@ void delete_folder(Folder *deleting)
     // print_list(deleting->parent, 1);
 }
 
-int save_path(Folder *fld, File *fil, FILE *fp)
+int save_path(int rec_count, Folder *fld, File *fil, FILE *fp)
 {
     Folder *parent;
     if (fld != NULL)
@@ -330,18 +330,22 @@ int save_path(Folder *fld, File *fil, FILE *fp)
 
     if (parent != NULL)
     {
-        save_path(parent, NULL, fp);
+        save_path(rec_count + 1, parent, NULL, fp);
         if (fld != NULL)
         {
-            fprintf(fp, "/%s", fld->filename);
+            if (rec_count != 0)
+                fprintf(fp, "%s/", fld->filename);
+            else
+                fprintf(fp, "%s", fld->filename);
         }
         else if (fil != NULL)
         {
-            fprintf(fp, "/%s.%s", fil->filename, fil->extension);
+            fprintf(fp, "%s.%s", fil->filename, fil->extension);
         }
     }
     else
     {
+        fprintf(fp, "/");
     }
 
     return 1;

@@ -66,6 +66,10 @@ int checkMajorArgumentValid(char *argument, Folder *RootFolder, Folder *CurrentF
 
 	strcpy(path, argument);
 
+	// char *sep2 = "$";
+	// argument = strtok(NULL, sep2);
+	// printf("i = %d, istr = %s\n", 10, argument);
+
 	for (size_t i = 0; i < strlen(path); i++)
 	{
 		if (path[i] == '\n')
@@ -74,7 +78,7 @@ int checkMajorArgumentValid(char *argument, Folder *RootFolder, Folder *CurrentF
 		}
 	}
 
-	if (argument[0] == '/')
+	if (path[0] == '/')
 	{
 		// Абсолютный путь
 		ptr = RootFolder;
@@ -382,28 +386,36 @@ int executeCommand(char *command, char *minorArg, Folder **majorArgFolder, File 
 
 FILE *SAVE;
 
+int cansave = 0;
+
 int newRecord(char *time, char *date, Folder *folder, char *command)
 {
-	SAVE = fopen(SAVEFILENAME, "a");
-
-	if (SAVE == NULL)
+	if (cansave)
 	{
-		printf("Unable to open %s\n", SAVEFILENAME);
+		SAVE = fopen(SAVEFILENAME, "a");
+
+		if (SAVE == NULL)
+		{
+			printf("Unable to open %s\n", SAVEFILENAME);
+		}
+
+		if (time != NULL)
+		{
+			fprintf(SAVE, "%s$%s$", time, date);
+		}
+
+		save_path(0, folder, NULL, SAVE);
+		fprintf(SAVE, "$%s", command);
+
+		fclose(SAVE);
 	}
-
-	if (time != NULL)
-	{
-		fprintf(SAVE, "%s$%s$", time, date);
-	}
-
-	save_path(folder, NULL, SAVE);
-	fprintf(SAVE, "$%s", command);
-
-	fclose(SAVE);
 }
 
 int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder)
 {
+
+	printf("%sfdfdf\n", input);
+
 	int result = SUCCESS; // Если что-то пойдет не так, то он изменится
 
 	char *sep = " ";
@@ -551,8 +563,11 @@ cleanup:
 int readRecords(Folder *RootFolder)
 {
 	SAVE = fopen(SAVEFILENAME, "r");
-	char *buf;
+	char buf[MAX_COMMAND_LEN * 4];
+	buf[0] = '\0';
 	char *sep = "$";
+	char data[4][MAX_COMMAND_LEN];
+	int kolvo = 0;
 
 	if (SAVE == NULL)
 	{
@@ -560,51 +575,51 @@ int readRecords(Folder *RootFolder)
 	}
 
 	Folder *CurrentFolder;
-	size_t len = 0;
 	size_t read;
 
-	while ((read = getline(&buf, &len, SAVE)) != -1)
+	while (!feof(SAVE))
 	{
-		// fscanf(SAVE, "%s", buf);
-		char *istr = strtok(buf, sep);
-		int i = 0;
-
-		char *time = (char *)malloc(9);
-		char *date = (char *)malloc(9);
-
-		while (istr != NULL)
+		fgets(buf, MAX_COMMAND_LEN * 4, SAVE);
+		if (strlen(buf) > 1)
 		{
-			switch (i)
+			kolvo = 0;
+			// printf("buf = %s, EOF = %d\n", buf, feof(SAVE));
+			//  fscanf(SAVE, "%s", buf);
+			char *istr = strtok(buf, sep);
+
+			while (istr != NULL)
 			{
-			case 0:
-				strcpy(date, istr);
-				break;
+				strcpy(data[kolvo], istr);
+				printf("data[%d] = %s\n", kolvo, data[kolvo]);
+				kolvo++;
+				istr = strtok(NULL, sep);
+			}
+			printf("kolvo = %d\n", kolvo);
 
-			case 1:
-				strcpy(time, istr);
-				break;
+			if (kolvo == 4)
+			{
 
-			case 2:
-				checkMajorArgumentValid(istr, RootFolder, CurrentFolder, &CurrentFolder, NULL);
-				break;
-			case 3:
-				commandParserHandler(istr, RootFolder, &CurrentFolder);
+				char *time = (char *)malloc(9);
+				char *date = (char *)malloc(9);
+				strcpy(date, data[0]);
+				strcpy(time, data[1]);
+				checkMajorArgumentValid(data[2], RootFolder, CurrentFolder, &CurrentFolder, NULL);
+				commandParserHandler(data[3], RootFolder, &CurrentFolder);
 
-				if (istr[0] == 'm')
+				if (data[3][0] == 'm')
 				{
 					strcpy(CurrentFolder->folders[CurrentFolder->folders_count_cur - 1].creation_date, date);
 					strcpy(CurrentFolder->folders[CurrentFolder->folders_count_cur - 1].creation_time, time);
 				}
-				break;
-			default:
-				break;
+
+				free(time);
+				free(date);
 			}
-
-			istr = strtok(NULL, sep);
-			i++;
+			else if (kolvo == 2)
+			{
+				checkMajorArgumentValid(data[0], RootFolder, CurrentFolder, &CurrentFolder, NULL);
+				commandParserHandler(data[1], RootFolder, &CurrentFolder);
+			}
 		}
-
-		free(time);
-		free(date);
 	}
 }
