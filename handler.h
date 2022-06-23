@@ -380,26 +380,26 @@ int executeCommand(char *command, char *minorArg, Folder **majorArgFolder, File 
 
 #define SAVEFILENAME "save.dat"
 
-FILE* SAVE;
+FILE *SAVE;
 
-int newRecord(char* time, char* date, Folder* folder, char* command)
+int newRecord(char *time, char *date, Folder *folder, char *command)
 {
-    SAVE = fopen(SAVEFILENAME, "a");
+	SAVE = fopen(SAVEFILENAME, "a");
 
-    if (SAVE == NULL)
-    {
-        printf("Unable to open %s\n", SAVEFILENAME);
-    }
+	if (SAVE == NULL)
+	{
+		printf("Unable to open %s\n", SAVEFILENAME);
+	}
 
-    if (time != NULL)
-    {
-        fprintf(SAVE, "%s$%s$", time, date);
-    }
+	if (time != NULL)
+	{
+		fprintf(SAVE, "%s$%s$", time, date);
+	}
 
-    save_path(folder, NULL, SAVE);
-    fprintf(SAVE, "$%s", command);
+	save_path(folder, NULL, SAVE);
+	fprintf(SAVE, "$%s", command);
 
-    fclose(SAVE);
+	fclose(SAVE);
 }
 
 int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder)
@@ -524,7 +524,7 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 	{
 		if (!strcmp(command, "mkdir"))
 		{
-			newRecord(ResultFolder->creation_time, ResultFolder->creation_date,	*CurrentFolder, input);
+			newRecord(ResultFolder->creation_time, ResultFolder->creation_date, *CurrentFolder, input);
 		}
 
 		else if (!strcmp(command, "touch"))
@@ -548,64 +548,63 @@ cleanup:
 	return result;
 }
 
-int readRecords(Folder** RootFolder)
+int readRecords(Folder *RootFolder)
 {
-    SAVE = fopen(SAVEFILENAME, "r");
-    char* buf;
-    buf[0] = '\0';
+	SAVE = fopen(SAVEFILENAME, "r");
+	char *buf;
+	char *sep = "$";
 
-    char* sep = "$";
+	if (SAVE == NULL)
+	{
+		printf("Unable to open %s\n", SAVEFILENAME);
+	}
 
-    if (SAVE == NULL)
-    {
-        printf("Unable to open %s\n", SAVEFILENAME);
-    }
-
-    Folder* CurrentFolder;
+	Folder *CurrentFolder;
 	size_t len = 0;
-    ssize_t read;
+	size_t read;
 
-	while ((read = getline(&buf, &len, SAVE)) != -1) 
-    {
-        // fscanf(SAVE, "%s", buf);
-        char* istr = strtok(buf, sep);
-        int i = 0;
+	while ((read = getline(&buf, &len, SAVE)) != -1)
+	{
+		// fscanf(SAVE, "%s", buf);
+		char *istr = strtok(buf, sep);
+		int i = 0;
 
-        char* time = (char*) malloc(9);
-        char* date = (char*) malloc(9);
+		char *time = (char *)malloc(9);
+		char *date = (char *)malloc(9);
 
-        while (istr != NULL)
-        {
-            switch (i)
-            {
-            case 0:
-                strcpy(date, istr);
-                break;
-            
-            case 1:
-                strcpy(time, istr);
+		while (istr != NULL)
+		{
+			switch (i)
+			{
+			case 0:
+				strcpy(date, istr);
+				break;
 
-            case 2:
-				checkMajorArgumentValid(istr, *RootFolder, CurrentFolder, &CurrentFolder, NULL);
+			case 1:
+				strcpy(time, istr);
+				break;
 
+			case 2:
+				checkMajorArgumentValid(istr, RootFolder, CurrentFolder, &CurrentFolder, NULL);
+				break;
 			case 3:
-				commandParserHandler(istr, *RootFolder, &CurrentFolder);
+				commandParserHandler(istr, RootFolder, &CurrentFolder);
 
 				if (istr[0] == 'm')
 				{
 					strcpy(CurrentFolder->folders[CurrentFolder->folders_count_cur - 1].creation_date, date);
 					strcpy(CurrentFolder->folders[CurrentFolder->folders_count_cur - 1].creation_time, time);
 				}
+				break;
+			default:
+				break;
+			}
 
-            default:
-                break;
-            }
-              
-            istr = strtok(NULL, sep);
-            i++;
-        }
+			istr = strtok(NULL, sep);
+			i++;
+		}
 
-        free(time);
-        free(date);
-    }
+		free(time);
+		free(date);
+	}
 }
