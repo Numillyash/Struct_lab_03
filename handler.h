@@ -247,6 +247,8 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 
 		else
 			print_list(PrintDirectory, 0);
+		
+		return SUCCESS;
 	}
 
 	else if (!strcmp(command, "rm"))
@@ -260,6 +262,60 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 		{
 			// Работаем с папкой, рекурсивное удаление MajorArgFolder
 		}
+
+		return SUCCESS;
+	}
+
+	else if (!strcmp(command, "find"))
+	{
+		printf("FIND!\n");
+
+		char* buf = (char*) malloc(MAX_ARG_LEN);
+		char* fname = (char*) malloc(MAX_ARG_LEN);
+		char* ext = (char*) malloc(MAX_ARG_LEN);
+
+		int count = 0;
+		printf("MinorArg: %s\n", minorArg);
+		strcpy(buf, minorArg);
+
+		char* sep = ".";
+		char* istr = strtok(buf, sep);
+
+		while (istr != NULL)
+		{
+			if (count == 0)
+			{
+				strcpy(fname, istr);
+				count++;
+			}
+
+			else
+			{
+				strcpy(ext, istr);
+				count++;
+				break;
+			}
+
+			istr = strtok(NULL, sep);
+		}
+		
+		printf("Count: %d\n", count);
+
+		if (count == 1)
+		{
+			printf("tryin to find folder\n");
+			find_folder(fname, majorArgFolder);
+		}
+
+		else
+		{
+			printf("tryin to find file\n");
+			find_file(fname, ext, majorArgFolder);
+		}
+
+		free(buf);
+		free(fname);
+		free(ext);
 	}
 
 	else
@@ -267,6 +323,8 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 		printf("Unknown command: %s", command);
 		return FAILURE;
 	}
+
+	return SUCCESS;
 }
 
 int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder)
@@ -279,6 +337,16 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 	int i = 0; // Счетчик обработанных лексемм
 
 	strcpy(str, input);
+
+	for (size_t i = 0; i < strlen(str); i++)
+	{
+		if (str[i] == '\n')
+		{
+			str[i] = ' ';
+		}
+	}
+	
+
 	istr = strtok(str, sep);
 
 	char *command = (char *)malloc(MAX_COMMAND_LEN);
@@ -293,6 +361,7 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 	while (istr != NULL)
 	{
 		// Обрабатываем команду/аргумент
+		printf("%d\n", i);
 		switch (i)
 		{
 		case 0:
@@ -316,20 +385,29 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 
 		case 1:
 			// аргумент 1
-			if (checkArgumentValid(command, istr, RootFolder, *CurrentFolder, &ResultFolder, &ResultFile))
+			if (strcmp(command, "find"))
 			{
-				result = WRONG_OPTION;
-				goto cleanup;
+				if (checkArgumentValid(command, istr, RootFolder, *CurrentFolder, &ResultFolder, &ResultFile))
+				{
+					result = WRONG_OPTION;
+					goto cleanup;
+				}
+
+				if (istr[0] == '-')
+					optionFlag = 1;
 			}
 
-			if (istr[0] == '-')
+			else
+			{
 				optionFlag = 1;
+			}
 
 			strcpy(arg1, istr);
 			break;
 
 		case 2:
 			// аргумент 2
+
 			if (!optionFlag)
 			{
 				result = WRONG_ARGUMENT_FAILURE;
@@ -353,7 +431,7 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 		istr = strtok(NULL, sep); // Выделяем следующую часть
 	}
 
-	printf("%s, %s, %s\n", command, arg1, arg2);
+	printf("%d: %s, %s, %s\n", i ,command, arg1, arg2);
 	result = executeCommand(command, arg1, ResultFolder, ResultFile, ResultFolder != NULL, RootFolder, CurrentFolder);
 	// printf("- exec: %d", r);
 

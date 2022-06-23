@@ -27,9 +27,9 @@ int main(int argc, char **argv)
 
     // print_path(NULL, &RootFolder.folders[0].files[0]);
 
-    find_folder("test11", &RootFolder);
+    // find_folder("test11", &RootFolder);
 
-    find_file("test", "exe", &RootFolder);
+    // find_file("test", "exe", &RootFolder);
 
     // delete_folder(&RootFolder.folders[0].folders[1].folders[0]);
 
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 
     // else
     //     printf("ResultFolder is NULL\n");
-    /*
+    
         char *buf;
 
         while (1)
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 
             iResult = commandParserHandler(buf, &RootFolder, &CurrentFolder);
             printf("result: %d\n", iResult);
-        }*/
+        }
 
     return 0;
 }
