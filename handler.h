@@ -1,12 +1,14 @@
 #include "include/ui.h"
-#include "structs.h"
 #include <stdio.h>
+#include "structs.h"
 
 #define MAX_ARG_LEN 200
 
 #define OBJECT_WRONG 0
 #define OBJECT_FOLDER 1
 #define OBJECT_FILE 2
+
+#define SAVEFILENAME "save.dat"
 
 int checkCommandValid(char *command)
 {
@@ -218,7 +220,7 @@ int checkArgumentValid(char *command, char *argument, Folder *RootFolder, Folder
 	return SUCCESS;
 }
 
-int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *majorArgFile, int majorArgIsFolder, Folder *RootFolder, Folder **CurrentFolder)
+int executeCommand(char *command, char *minorArg, Folder **majorArgFolder, File **majorArgFile, int majorArgIsFolder, Folder *RootFolder, Folder **CurrentFolder)
 {
 	if (!strcmp(command, "cd"))
 	{
@@ -227,7 +229,7 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 			return FAILURE;
 		}
 
-		*CurrentFolder = majorArgFolder;
+		*CurrentFolder = *majorArgFolder;
 		return SUCCESS;
 	}
 
@@ -241,7 +243,7 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 
 		else
 		{
-			PrintDirectory = majorArgFolder;
+			PrintDirectory = *majorArgFolder;
 		}
 
 		if (!strcmp(minorArg, "-l"))
@@ -258,14 +260,13 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 		if (!majorArgIsFolder)
 		{
 			// Работаем с файлом, удаление MajorArgFile
-			delete_file(majorArgFile);
+			delete_file(*majorArgFile);
 		}
 
 		else
 		{
 			// Работаем с папкой, рекурсивное удаление MajorArgFolder
-			printf("=== %s\n", majorArgFolder->filename);
-			delete_folder(majorArgFolder);
+			delete_folder(*majorArgFolder);
 		}
 
 		return SUCCESS;
@@ -309,13 +310,13 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 		if (count == 1)
 		{
 			printf("tryin to find folder\n");
-			find_folder(fname, majorArgFolder);
+			find_folder(fname, *majorArgFolder);
 		}
 
 		else
 		{
 			printf("tryin to find file\n");
-			find_file(fname, ext, majorArgFolder);
+			find_file(fname, ext, *majorArgFolder);
 		}
 
 		free(buf);
@@ -354,6 +355,8 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 			istr = strtok(NULL, sep);
 		}
 		addFile(fname, ext, *CurrentFolder);
+		*majorArgFile = &(*CurrentFolder)->files[(*CurrentFolder)->files_count_cur - 1];
+		printf("--- %s\n", (*majorArgFile)->creation_time);
 
 		free(buf);
 		free(fname);
@@ -363,6 +366,7 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 	else if (!strcmp(command, "mkdir"))
 	{
 		addFolder(minorArg, *CurrentFolder);
+		*majorArgFolder = &(*CurrentFolder)->folders[(*CurrentFolder)->folders_count_cur - 1];
 	}
 
 	else
@@ -372,6 +376,30 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 	}
 
 	return SUCCESS;
+}
+
+#define SAVEFILENAME "save.dat"
+
+FILE* SAVE;
+
+int newRecord(char* time, char* date, Folder* folder, char* command)
+{
+    SAVE = fopen(SAVEFILENAME, "a");
+
+    if (SAVE == NULL)
+    {
+        printf("Unable to open %s\n", SAVEFILENAME);
+    }
+
+    if (time != NULL)
+    {
+        fprintf(SAVE, "%s$%s$", time, date);
+    }
+
+    save_path(folder, NULL, SAVE);
+    fprintf(SAVE, "$%s", command);
+
+    fclose(SAVE);
 }
 
 int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder)
@@ -489,7 +517,26 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 	}
 
 	printf("%d: %s, %s, %s\n", i, command, arg1, arg2);
-	result = executeCommand(command, arg1, ResultFolder, ResultFile, ResultFolder != NULL, RootFolder, CurrentFolder);
+	result = executeCommand(command, arg1, &ResultFolder, &ResultFile, ResultFolder != NULL, RootFolder, CurrentFolder);
+
+	printf("Writing...\n");
+	if (result == SUCCESS)
+	{
+		if (!strcmp(command, "mkdir"))
+		{
+			newRecord(ResultFolder->creation_time, ResultFolder->creation_date,	*CurrentFolder, input);
+		}
+
+		else if (!strcmp(command, "touch"))
+		{
+			newRecord(ResultFile->creation_time, ResultFile->creation_date, *CurrentFolder, input);
+		}
+
+		else if (!strcmp(command, "rm"))
+		{
+			newRecord(NULL, NULL, *CurrentFolder, input);
+		}
+	}
 	// printf("- exec: %d", r);
 
 cleanup:
@@ -499,4 +546,66 @@ cleanup:
 	free(arg2);
 
 	return result;
+}
+
+int readRecords(Folder** RootFolder)
+{
+    SAVE = fopen(SAVEFILENAME, "r");
+    char* buf;
+    buf[0] = '\0';
+
+    char* sep = "$";
+
+    if (SAVE == NULL)
+    {
+        printf("Unable to open %s\n", SAVEFILENAME);
+    }
+
+    Folder* CurrentFolder;
+	size_t len = 0;
+    ssize_t read;
+
+	while ((read = getline(&buf, &len, SAVE)) != -1) 
+    {
+        // fscanf(SAVE, "%s", buf);
+        char* istr = strtok(buf, sep);
+        int i = 0;
+
+        char* time = (char*) malloc(9);
+        char* date = (char*) malloc(9);
+
+        while (istr != NULL)
+        {
+            switch (i)
+            {
+            case 0:
+                strcpy(date, istr);
+                break;
+            
+            case 1:
+                strcpy(time, istr);
+
+            case 2:
+				checkMajorArgumentValid(istr, *RootFolder, CurrentFolder, &CurrentFolder, NULL);
+
+			case 3:
+				commandParserHandler(istr, *RootFolder, &CurrentFolder);
+
+				if (istr[0] == 'm')
+				{
+					strcpy(CurrentFolder->folders[CurrentFolder->folders_count_cur - 1].creation_date, date);
+					strcpy(CurrentFolder->folders[CurrentFolder->folders_count_cur - 1].creation_time, time);
+				}
+
+            default:
+                break;
+            }
+              
+            istr = strtok(NULL, sep);
+            i++;
+        }
+
+        free(time);
+        free(date);
+    }
 }

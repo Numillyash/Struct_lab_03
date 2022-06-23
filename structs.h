@@ -5,7 +5,7 @@
 
 #define MAX_EXIST_OBJ 255
 
-static const char right_symb_name[] = " QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiop[]{}asdfghjkl;zxcvbnm,.?!@~`#№$%^&()+-0123456789";
+static const char right_symb_name[] = " QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiop[]{}asdfghjkl;zxcvbnm,.?!@~`#№_%^&()+-0123456789";
 static const char right_symb_ext[] = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789";
 
 #define extinsion_lenth 10
@@ -48,7 +48,7 @@ int addFile(char *file_name, char *extension, Folder *fld);
 
 int print_list(Folder *fld, int mode);
 
-int save_path(Folder *fld, File *fil);
+int save_path(Folder *fld, File *fil, FILE* fp);
 
 int get_path(Folder *fld, File *fil);
 
