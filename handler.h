@@ -91,15 +91,17 @@ int checkMajorArgumentValid(char *argument, Folder *RootFolder, Folder *CurrentF
 	while (istr != NULL)
 	{
 		foundFlag = 1;
-		for (size_t i = 0; i < CurrentFolder->folders_count_cur; i++)
+		for (size_t i = 0; i < ptr->folders_count_cur; i++)
 		{
-			if (!strcmp(CurrentFolder->folders[i].filename, istr))
+			if (!strcmp(ptr->folders[i].filename, istr))
 			{
 				foundFlag = 0;
-				ptr = &CurrentFolder->folders[i];
+				ptr = &ptr->folders[i];
 				break;
 			}
 		}
+
+		printf("ptr: %s\n", ptr->filename);
 
 		if (foundFlag)
 		{
@@ -117,7 +119,7 @@ int checkMajorArgumentValid(char *argument, Folder *RootFolder, Folder *CurrentF
 			{
 				char *filename = (char *)malloc(filename_lenth + 1);
 				char *extension = (char *)malloc(extinsion_lenth + 1);
-				int extFlag = 0;
+				int extFlag = 1;
 
 				int writeCount = 0;
 
@@ -125,7 +127,7 @@ int checkMajorArgumentValid(char *argument, Folder *RootFolder, Folder *CurrentF
 				{
 					if (istr[i] == '.')
 					{
-						extFlag = 1;
+						extFlag = 0;
 						filename[writeCount + 1] = '\0';
 						writeCount = 0;
 						continue;
@@ -256,11 +258,14 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 		if (!majorArgIsFolder)
 		{
 			// Работаем с файлом, удаление MajorArgFile
+			delete_file(majorArgFile);
 		}
 
 		else
 		{
 			// Работаем с папкой, рекурсивное удаление MajorArgFolder
+			printf("=== %s\n", majorArgFolder->filename);
+			delete_folder(majorArgFolder);
 		}
 
 		return SUCCESS;
