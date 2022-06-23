@@ -244,7 +244,7 @@ int executeCommand(char *command, char *minorArg, Folder *majorArgFolder, File *
 			PrintDirectory = majorArgFolder;
 		}
 
-		if (minorArg != NULL)
+		if (!strcmp(minorArg, "-l"))
 			print_list(PrintDirectory, 1);
 
 		else
