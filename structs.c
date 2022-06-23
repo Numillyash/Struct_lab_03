@@ -76,8 +76,8 @@ int createFile(char *file_name, char *extension, File *file)
     time(&time_now);
     time_info = localtime(&time_now);
 
-    strftime(result.creation_time, creation_time_length, "%T %D", time_info);
-    strftime(result.creation_date, creation_time_length, "%D ", time_info);
+    strftime(result.creation_time, creation_time_length, "%T", time_info);
+    strftime(result.creation_date, creation_time_length, "%D", time_info);
 
     if ((errno = check_name(file_name)) != SUCCESS)
         return errno;
@@ -109,8 +109,8 @@ int createFolder(char *folder_name, Folder *folder)
     time(&time_now);
     time_info = localtime(&time_now);
 
-    strftime(result.creation_time, creation_time_length, "%T %D", time_info);
-    strftime(result.creation_date, creation_time_length, "%D ", time_info);
+    strftime(result.creation_time, creation_time_length, "%T", time_info);
+    strftime(result.creation_date, creation_time_length, "%D", time_info);
 
     result.files = (File *)malloc(sizeof(File));
     result.folders = (Folder *)malloc(sizeof(Folder));
@@ -241,12 +241,12 @@ int print_list(Folder *fld, int mode)
         printf("├──────────┼──────────┼────────────────────────────────────────────────────┼────────────┤\n");
 
         for (i = 0; i < fld->files_count_cur; i++)
-            printf("│ %s│ %s│ %*s │ %*s │\n", fld->files[i].creation_time, fld->files[i].creation_date, filename_lenth, fld->files[i].filename, extinsion_lenth, fld->files[i].extension);
+            printf("│ %s │ %s │ %*s │ %*s │\n", fld->files[i].creation_time, fld->files[i].creation_date, filename_lenth, fld->files[i].filename, extinsion_lenth, fld->files[i].extension);
         printf("├──────────┼──────────┼────────────────────────────────────────────────────┼────────────┘\n");
         printf("│   Time   │   Date   │                     Foldernames                    │\n");
         printf("├──────────┼──────────┼────────────────────────────────────────────────────┤\n");
         for (i = 0; i < fld->folders_count_cur; i++)
-            printf("│ %s│ %s│ %*s │\n", fld->folders[i].creation_time, fld->folders[i].creation_date, filename_lenth, fld->folders[i].filename);
+            printf("│ %s │ %s │ %*s │\n", fld->folders[i].creation_time, fld->folders[i].creation_date, filename_lenth, fld->folders[i].filename);
         printf("└──────────┴──────────┴────────────────────────────────────────────────────┘\n");
     }
 }
