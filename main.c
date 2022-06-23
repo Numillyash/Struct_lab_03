@@ -29,9 +29,12 @@ int main(int argc, char **argv)
 
     // print_path(NULL, &RootFolder.folders[0].files[0]);
 
-    // find_folder("test11", &RootFolder);
+    find_file("test", "exe", &RootFolder);
 
-    // find_file("test", "exe", &RootFolder);
+    save_path(&RootFolder.folders[0], NULL);
+    printf("\n");
+    save_path(NULL, &RootFolder.folders[0].files[0]);
+    printf("\n");
 
     // delete_folder(&RootFolder.folders[0]);
 
