@@ -8,7 +8,7 @@
 #define OBJECT_FOLDER 1
 #define OBJECT_FILE 2
 
-#define SAVEFILENAME "save.dat"
+#define SAVEFILENAME "file_tree.save"
 
 int checkCommandValid(char *command)
 {
@@ -107,7 +107,7 @@ int checkMajorArgumentValid(char *argument, Folder *RootFolder, Folder *CurrentF
 			}
 		}
 
-		printf("ptr: %s\n", ptr->filename);
+		// printf("ptr: %s\n", ptr->filename);
 
 		if (foundFlag)
 		{
@@ -169,7 +169,7 @@ int checkMajorArgumentValid(char *argument, Folder *RootFolder, Folder *CurrentF
 				free(extension);
 			}
 
-			printf("Cannot resolve %s\n", istr);
+			// printf("Cannot resolve %s\n", istr);
 			return WRONG_ARGUMENT_FAILURE;
 		}
 
@@ -278,14 +278,14 @@ int executeCommand(char *command, char *minorArg, Folder **majorArgFolder, File 
 
 	else if (!strcmp(command, "find"))
 	{
-		printf("FIND!\n");
+		// printf("FIND!\n");
 
 		char *buf = (char *)malloc(MAX_ARG_LEN);
 		char *fname = (char *)malloc(MAX_ARG_LEN);
 		char *ext = (char *)malloc(MAX_ARG_LEN);
 
 		int count = 0;
-		printf("MinorArg: %s\n", minorArg);
+		// printf("MinorArg: %s\n", minorArg);
 		strcpy(buf, minorArg);
 
 		char *sep = ".";
@@ -309,18 +309,20 @@ int executeCommand(char *command, char *minorArg, Folder **majorArgFolder, File 
 			istr = strtok(NULL, sep);
 		}
 
-		printf("Count: %d\n", count);
+		// printf("Count: %d\n", count);
 
 		if (count == 1)
 		{
-			printf("tryin to find folder\n");
-			find_folder(fname, *majorArgFolder);
+			// printf("tryin to find folder\n");
+			// printf("*majorArgFolder: %s\n", (*majorArgFolder));
+			// printf("majorArgIsFolder: %d\n", (majorArgIsFolder));
+			find_folder(fname, *CurrentFolder);
 		}
 
 		else
 		{
-			printf("tryin to find file\n");
-			find_file(fname, ext, *majorArgFolder);
+			// printf("tryin to find file\n");
+			find_file(fname, ext, *CurrentFolder);
 		}
 
 		free(buf);
@@ -335,7 +337,7 @@ int executeCommand(char *command, char *minorArg, Folder **majorArgFolder, File 
 		char *ext = (char *)malloc(MAX_ARG_LEN);
 
 		int count = 0;
-		printf("MinorArg: %s\n", minorArg);
+		// printf("MinorArg: %s\n", minorArg);
 		strcpy(buf, minorArg);
 
 		char *sep = ".";
@@ -360,7 +362,7 @@ int executeCommand(char *command, char *minorArg, Folder **majorArgFolder, File 
 		}
 		addFile(fname, ext, *CurrentFolder);
 		*majorArgFile = &(*CurrentFolder)->files[(*CurrentFolder)->files_count_cur - 1];
-		printf("--- %s\n", (*majorArgFile)->creation_time);
+		// printf("--- %s\n", (*majorArgFile)->creation_time);
 
 		free(buf);
 		free(fname);
@@ -375,14 +377,12 @@ int executeCommand(char *command, char *minorArg, Folder **majorArgFolder, File 
 
 	else
 	{
-		printf("Unknown command: %s", command);
+		// printf("Unknown command: %s", command);
 		return FAILURE;
 	}
 
 	return SUCCESS;
 }
-
-#define SAVEFILENAME "save.dat"
 
 FILE *SAVE;
 
@@ -396,16 +396,16 @@ int newRecord(char *time, char *date, Folder *folder, char *command)
 
 		if (SAVE == NULL)
 		{
-			printf("Unable to open %s\n", SAVEFILENAME);
+			// printf("Unable to open %s\n", SAVEFILENAME);
 		}
 
 		if (time != NULL)
 		{
-			fprintf(SAVE, "%s$%s$", time, date);
+			fprintf(SAVE, "%s=%s=", time, date);
 		}
 
 		save_path(0, folder, NULL, SAVE);
-		fprintf(SAVE, "$%s", command);
+		fprintf(SAVE, "=%s", command);
 
 		fclose(SAVE);
 	}
@@ -414,7 +414,7 @@ int newRecord(char *time, char *date, Folder *folder, char *command)
 int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder)
 {
 
-	printf("%sfdfdf\n", input);
+	// printf("%sfdfdf\n", input);
 
 	int result = SUCCESS; // Если что-то пойдет не так, то он изменится
 
@@ -449,7 +449,7 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 	while (istr != NULL)
 	{
 		// Обрабатываем команду/аргумент
-		printf("%d\n", i);
+		// printf("%d\n", i);
 		switch (i)
 		{
 		case 0:
@@ -464,7 +464,7 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 
 			if (checkCommandValid(istr)) // Если команда неправильная
 			{
-				printf("Incorrect Command!");
+				printf("Incorrect Command!\n");
 				result = FAILURE;
 				goto cleanup;
 			}
@@ -528,10 +528,11 @@ int commandParserHandler(char *input, Folder *RootFolder, Folder **CurrentFolder
 		istr = strtok(NULL, sep); // Выделяем следующую часть
 	}
 
-	printf("%d: %s, %s, %s\n", i, command, arg1, arg2);
+	// printf("%d: %s, %s, %s\n", i, command, arg1, arg2);
+	// printf("Result folder: %s\n", ResultFolder);
 	result = executeCommand(command, arg1, &ResultFolder, &ResultFile, ResultFolder != NULL, RootFolder, CurrentFolder);
 
-	printf("Writing...\n");
+	// printf("Writing...\n");
 	if (result == SUCCESS)
 	{
 		if (!strcmp(command, "mkdir"))
@@ -565,13 +566,14 @@ int readRecords(Folder *RootFolder)
 	SAVE = fopen(SAVEFILENAME, "r");
 	char buf[MAX_COMMAND_LEN * 4];
 	buf[0] = '\0';
-	char *sep = "$";
+	char *sep = "=";
 	char data[4][MAX_COMMAND_LEN];
 	int kolvo = 0;
 
 	if (SAVE == NULL)
 	{
 		printf("Unable to open %s\n", SAVEFILENAME);
+		return 0;
 	}
 
 	Folder *CurrentFolder;
@@ -590,11 +592,11 @@ int readRecords(Folder *RootFolder)
 			while (istr != NULL)
 			{
 				strcpy(data[kolvo], istr);
-				printf("data[%d] = %s\n", kolvo, data[kolvo]);
+				// printf("data[%d] = %s\n", kolvo, data[kolvo]);
 				kolvo++;
 				istr = strtok(NULL, sep);
 			}
-			printf("kolvo = %d\n", kolvo);
+			// printf("kolvo = %d\n", kolvo);
 
 			if (kolvo == 4)
 			{

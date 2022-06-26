@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 
     readRecords(CurrentFolder);
     cansave = 1;
-    printf("bruh2\n");
+    // printf("bruh2\n");
 
     while (1)
     {
@@ -30,7 +30,7 @@ int main(int argc, char **argv)
         }
 
         iResult = commandParserHandler(buf, &RootFolder, &CurrentFolder);
-        printf("result: %d\n", iResult);
+        // printf("result: %d\n", iResult);
     }
 
     return 0;
