@@ -19,6 +19,9 @@ int check_name(char *name)
     if (name[strln - 1] == '.')
         return FILENAME_ENDING_FAILURE;
 
+    if (strln == 0)
+        return FILENAME_LENGTH_FAILURE;
+
     return SUCCESS;
 }
 
@@ -40,6 +43,9 @@ int check_ext(char *ext)
 
     if (ext[strln - 1] == '.')
         return FILENAME_ENDING_FAILURE;
+
+    if (strln == 0)
+        return FILENAME_LENGTH_FAILURE;
 
     return SUCCESS;
 }
@@ -242,12 +248,12 @@ int print_list(Folder *fld, int mode)
 
         for (i = 0; i < fld->files_count_cur; i++)
             printf("│ %s │ %s │ %*s │ %*s │\n", fld->files[i].creation_time, fld->files[i].creation_date, filename_lenth, fld->files[i].filename, extinsion_lenth, fld->files[i].extension);
-        printf("├──────────┼──────────┼────────────────────────────────────────────────────┼────────────┘\n");
-        printf("│   Time   │   Date   │                     Foldernames                    │\n");
-        printf("├──────────┼──────────┼────────────────────────────────────────────────────┤\n");
+        printf("├──────────┼──────────┼────────────────────────────────────────────────────┼────────────┤\n");
+        printf("│   Time   │   Date   │                     Foldernames                    │  Contains  │\n");
+        printf("├──────────┼──────────┼────────────────────────────────────────────────────┼────────────┤\n");
         for (i = 0; i < fld->folders_count_cur; i++)
-            printf("│ %s │ %s │ %*s │\n", fld->folders[i].creation_time, fld->folders[i].creation_date, filename_lenth, fld->folders[i].filename);
-        printf("└──────────┴──────────┴────────────────────────────────────────────────────┘\n");
+            printf("│ %s │ %s │ %*s │ %*d │\n", fld->folders[i].creation_time, fld->folders[i].creation_date, filename_lenth, fld->folders[i].filename, 10, fld->folders[i].exists_into);
+        printf("└──────────┴──────────┴────────────────────────────────────────────────────┴────────────┘\n");
     }
 }
 
@@ -270,6 +276,7 @@ void delete_file(File *deleting)
             parent->files[i] = parent->files[i + 1];
         }
         parent->files_count_cur--;
+        parent->exists_into--;
     }
 }
 
@@ -308,6 +315,7 @@ void delete_folder(Folder *deleting)
             parent->folders[i] = parent->folders[i + 1];
         }
         parent->folders_count_cur--;
+        parent->exists_into--;
     }
     // print_list(deleting->parent, 1);
 }

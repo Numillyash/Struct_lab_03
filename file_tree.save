@@ -159,6 +159,22 @@
 20:45:04=06/26/22=/s1/s2/s3/s4/s5/s6/s7/s8/s9/s10/s11/s12/s13/s14=mkdir s15
 20:45:15=06/26/22=/s1/s2/s3/s4/s5/s6/s7/s8/s9/s10/s11/s12/s13/s14/s15=mkdir test_1
 20:45:19=06/26/22=/s1/s2/s3/s4/s5/s6/s7/s8/s9/s10/s11/s12/s13/s14/s15=mkdir test_2
-20:45:26=06/26/22=/s1/s2/s3/s4/s5/s6/s7/s8/s9/s10/s11/s12/s13/s14/s15=touch test
 20:45:32=06/26/22=/s1/s2/s3/s4/s5/s6/s7/s8/s9/s10/s11/s12/s13/s14/s15=touch test.exe
 20:45:40=06/26/22=/s1/s2/s3/s4/s5/s6/s7/s8/s9/s10/s11/s12/s13/s14/s15=touch exe.exe
+21:04:17=06/26/22=/s1/s2/s3/s4/s5/s6/s7/s8/s9/s10/s11/s12/s13/s14/s15=touch haha.bat
+21:04:24=06/26/22=/s1/s2/s3/s4/s5/s6/s7/s8/s9/s10/s11/s12/s13/s14/s15=touch haha.bate
+/s1/s2/s3/s4/s5/s6/s7/s8/s9/s10/s11/s12/s13/s14/s15=rm -r haha.bat
+21:05:18=06/26/22=/s1/s2/s3/s4/s5/s6/s7/s8/s9/s10/s11/s12/s13/s14/s15=touch haha.bat
+/s1/s2/s3/s4/s5/s6/s7/s8/s9/s10/s11/s12/s13/s14/s15=rm -r haha.bate
+21:14:11=06/26/22=/=touch another_file_for_test_input_max.filelength
+21:21:46=06/26/22=/=touch hehe
+21:22:03=06/26/22=/=touch kh.a
+/s1/s2/s3/s4/s5/s6/s7/s8/s9/s10/s11/s12/s13/s14/s15=rm 
+/=rm
+22:11:05=06/26/22=/s1/s2/s3=touch megafile.a
+22:13:08=06/26/22=/=touch makefile.file
+06/26/22=20:43:03=/s1/s2/s3=mkdir s4
+06/26/22=20:43:03=/s1/s2/s3=mkdir s4
+22:18:56=06/26/22=/s1/s2/s3=touch makefile.file
+22:18:56=06/26/22=/s1/s2/s3=touch makefile.file
+/s1/s2/s3/s4/s5/s6/s7/s8/s9/s10/s11/s12/s13/s14/s15=rm -r test_1
